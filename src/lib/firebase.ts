@@ -4,13 +4,13 @@ import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyD9eXwSKq_edLZ3VibE-Ow_9wJ4YtcUte8",
-    authDomain: "moja-4ca11.firebaseapp.com",
-    projectId: "moja-4ca11",
-    storageBucket: "moja-4ca11.firebasestorage.app",
-    messagingSenderId: "897872936744",
-    appId: "1:897872936744:web:aae0bcbb4b9bb9c9719a1d",
-    measurementId: "G-7RB7D1F7B9"
+    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+    measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
 // Initialize Firebase (Singleton pattern to avoid re-initialization on hot-reload)
