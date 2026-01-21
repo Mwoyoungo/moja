@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #C6B7E2;
+  --color-background-dark: #0F0F12;
+  --color-background-light: #f7f7f8;
+  --color-surface: #18181D;
+  --color-surface-dark: #18181D;
+  --color-muted-grey: #B3B3B8;
+  --color-card-dark: #18181D;
+  --color-lavender-pastel: #C6B7E2;
+
+  --font-display: var(--font-inter), sans-serif;
+  --font-sans: var(--font-inter), sans-serif;
+
+  --radius-2xl: 16px;
+}
+
+/* Custom Utilities */
+@utility hide-scrollbar {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Global Resets */
+:root {
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--color-background-dark);
+  color: white;
+  font-family: var(--font-display);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Material Symbols Setup */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  /* Default variations */
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
