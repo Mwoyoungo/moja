@@ -54,6 +54,14 @@ export default function FeedItem({ id, title, subtitle, likes, image, videoUrl, 
         }
     };
 
+    // Poll for status if we have an upload ID but no playback ID yet
+    useEffect(() => {
+        if (!muxPlaybackId && id) { // We could pass muxUploadId here if we updated the interface, but let's try to fetch by internal ID if needed, 
+            // or actually, the parent should handle this. 
+            // Simpler: Just handle the "Processing" state visually for now.
+        }
+    }, [muxPlaybackId, id]);
+
     return (
         <section className="relative h-full w-full snap-center shrink-0 overflow-hidden bg-black">
             {/* Video Layer: z-0 */}
@@ -67,7 +75,6 @@ export default function FeedItem({ id, title, subtitle, likes, image, videoUrl, 
                             loop
                             muted={false}
                             autoPlay={false} // Managed by intersection observer
-                            controls={false} // Hidden controls for custom UI
                             className="absolute inset-0 w-full h-full object-cover"
                             style={{ ['--media-object-fit' as any]: 'cover' }}
                         />

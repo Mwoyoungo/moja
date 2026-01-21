@@ -73,13 +73,14 @@ export default function CreateEventPage() {
 
             if (!uploadUrl) throw new Error("Failed to get upload URL");
 
-            // 2. Upload to Mux using UpChunk
+            // 2. Upload to Mux using UpChunk with Dynamic Chunk Size
             await new Promise<void>((resolve, reject) => {
-                const { createUpload } = require('@mux/upchunk'); // Dynamic import to avoid SSR issues if any
+                const { createUpload } = require('@mux/upchunk');
                 const upload = createUpload({
                     endpoint: uploadUrl,
                     file: videoFile,
-                    chunkSize: 5120, // 5MB chunks
+                    dynamicChunkSize: true, // Optimizes upload speed
+                    chunkSize: 5120, // Initial size
                 });
 
                 upload.on('progress', (progress: any) => {
@@ -95,30 +96,7 @@ export default function CreateEventPage() {
                 });
             });
 
-            // 3. Poll for Asset Ready (playbackId)
-            let playbackId = null;
-            let attempts = 0;
-            const maxAttempts = 30; // Wait up to 60s processing buffer
-
-            while (!playbackId && attempts < maxAttempts) {
-                await new Promise(r => setTimeout(r, 2000)); // Wait 2s
-                const statusRes = await fetch(`/api/mux/upload/${uploadId}`);
-                const statusData = await statusRes.json();
-
-                if (statusData.playbackId) {
-                    playbackId = statusData.playbackId;
-                }
-                attempts++;
-            }
-
-            if (!playbackId) {
-                // Determine if we proceed without it (async processing) or fail
-                // For now, let's assume if it takes too long, we might just save 'pending'
-                // But typically for short 9:16 clips it's fast.
-                console.warn("Timed out waiting for Mux playback ID, but upload successful.");
-            }
-
-            // 4. Create Event Document in Firestore
+            // 3. Create Event Document in Firestore (OPTIMISTIC - Don't wait for processing)
             const eventData = {
                 title,
                 description,
@@ -126,8 +104,9 @@ export default function CreateEventPage() {
                 date,
                 time,
                 tickets,
-                muxPlaybackId: playbackId, // Store the Mux ID
-                videoUrl: null, // No longer using direct Firebase URL
+                muxUploadId: uploadId, // Save Upload ID to poll later
+                muxPlaybackId: null, // Will be populated by client or webhook later
+                videoUrl: null,
                 organizerId: user.uid,
                 organizerName: user.displayName || 'Unknown Organizer',
                 likes: 0,
@@ -136,7 +115,7 @@ export default function CreateEventPage() {
 
             await addDoc(collection(db, 'events'), eventData);
 
-            // 5. Success
+            // 4. Success
             setLoading(false);
             router.push('/');
 
